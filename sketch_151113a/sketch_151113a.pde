@@ -22,7 +22,7 @@ println(Serial.list());
 myPort = new Serial(this, Serial.list()[0], 9600);
 myPort.bufferUntil(lf);              
 }
-/* draw the screen */
+
 void draw(){
   fill(0);                              
   noStroke();                           
@@ -35,15 +35,7 @@ void draw(){
   if (degree <= 1) {                   
   motion = 0;                          
   }
-  /* setup the radar sweep */
-  /*
-  We use trigonmetry to create points around a circle.
-  So the radius plus the cosine of the servo position converted to radians
-  Since radians 0 start at 90 degrees we add 180 to make it start from the left
-  Adding +1 (i) each time through the loops to move 1 degree matching the one degree of servo movement
-  cos is for the x left to right value and sin calculates the y value
-  since its a circle we plot our lines and vertices around the start point for everything will always be the center.
-  */
+  
   strokeWeight(7);                      
   if (motion == 0) {                    
     for (int i = 0; i <= 20; i++) {     
@@ -56,9 +48,9 @@ void draw(){
       line(radius, radius, radius + cos(radians(degree+(180+i)))*w, radius + sin(radians(degree+(180+i)))*w);
     }
   }
-  /* Setup the shapes made from the sensor values */
+ 
   noStroke();                          
-  /* first sweep */
+
   fill(0,50,0);                         
   beginShape();                         
     for (int i = 0; i < 180; i++) {     
@@ -67,7 +59,7 @@ void draw(){
       vertex(x, y);                     
     }
   endShape();                           
-  /* second sweep */
+
   fill(0,110,0);
   beginShape();
     for (int i = 0; i < 180; i++) {
@@ -76,7 +68,7 @@ void draw(){
       vertex(x, y);
     }
   endShape();
-  /* average */
+ 
   fill(0,170,0);
   beginShape();
     for (int i = 0; i < 180; i++) {
@@ -85,7 +77,7 @@ void draw(){
       vertex(x, y);
     }
   endShape();
-  /* if after first 2 sweeps, highlight motion with red circle*/
+ 
   if (firstRun >= 360) {
     stroke(150,0,0);
     strokeWeight(1);
@@ -98,7 +90,7 @@ void draw(){
         }
       }
   }
-  /* set the radar distance rings and out put their values, 50, 100, 150 etc.. */
+ 
   for (int i = 0; i <=6; i++){
     noFill();
     strokeWeight(1);
@@ -110,7 +102,7 @@ void draw(){
     radarDist+=50;
   }
   radarDist = 0;
-  /* draw the grid lines on the radar every 30 degrees and write their values 180, 210, 240 etc.. */
+  
   for (int i = 0; i <= 6; i++) {
     strokeWeight(1);
     stroke(0, 55, 0);
@@ -123,7 +115,7 @@ void draw(){
       text(Integer.toString(180+(30*i)), radius + cos(radians(180+(30*i)))*w, radius + sin(radians(180+(30*i)))*w, 60,40);
     }
   }
-  /* Write information text and values. */
+  
   noStroke();
   fill(0);
   rect(350,402,800,100);
@@ -151,17 +143,17 @@ void draw(){
   fill(150,0,0);
   text("Movimiento", 115, 130, 150, 50);
 }
-/* get values from serial port */
+/
 void serialEvent (Serial myPort) {
   String xString = myPort.readStringUntil(lf);  
    
-    if (xString != null) {  // if theres data in between the new lines
-        xString = trim(xString); // get rid of any whitespace just in case
+    if (xString != null) {  
+        xString = trim(xString); 
         String getX = xString.substring(1, xString.indexOf("V")); 
         String getV = xString.substring(xString.indexOf("V")+1, xString.length());
-        degree = Integer.parseInt(getX); // set the values to variables
+        degree = Integer.parseInt(getX); 
         value = Integer.parseInt(getV);
-        oldValue[degree] = newValue[degree]; // store the values in the arrays.
+        oldValue[degree] = newValue[degree]; 
         newValue[degree] = value;
         /* sets a counter to allow for the first 2 sweeps of the servo */
         firstRun++;
