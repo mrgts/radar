@@ -1,39 +1,39 @@
-import processing.serial.*;         // Importa la libreria serie
-Serial myPort;                      // Declara el puerto serie
-float x, y;                         // Variable para almacenar las coordenadas
-int radius = 350;                   // Establece el radio de los objetos
-int w = 300;                        // Establece un valor de anchura arbitraria
-int degree = 0;                     // Varible para la posición del servo en grados
-int value = 0;                      // Variable para el valor del sensor
-int motion = 0;                     // Variable para indicar el sentido del barrido del servo
-int[] newValue = new int[181];      // Matriz para almacenar cada valor nuevo de cada posición del servo
-int[] oldValue = new int[181];      // Matriz para almacenar cada valor previo de cada posición del servo
-PFont myFont;                       // Variable para configuración de fuente
-int radarDist = 0;                  // set value to configure Radar distance labels
-int firstRun = 0;                   // value to ignore triggering motion on the first 2 servo sweeps
-int lf = 10;                        // ASCII retorno de carro
+import processing.serial.*;         
+Serial myPort;                      
+float x, y;
+int radius = 350;                 
+int w = 300;                      
+int degree = 0;                     
+int value = 0;                     
+int motion = 0;                     
+int[] newValue = new int[181];      
+int[] oldValue = new int[181];      
+PFont myFont;                       
+int radarDist = 0;                 
+int firstRun = 0;                   
+int lf = 10;                      
 void setup(){
-size(750, 450);                     // Establece el tamaño de la ventana
-background (0);                     // Establece a negro del fondo de la ventana
-myFont = createFont("verdana", 12); // Parametros de la fuente
-textFont(myFont);                   // Establece los parametros de la fuente
+size(750, 450);                    
+background (0);                     
+myFont = createFont("verdana", 12); 
+textFont(myFont);                   
   
-println(Serial.list());              // Lista todos los puertos series
-myPort = new Serial(this, Serial.list()[0], 9600); // Establece un puerto serie
-myPort.bufferUntil(lf);              // Almacena en el bufer hasta llegar un retorno de carro
+println(Serial.list());              
+myPort = new Serial(this, Serial.list()[0], 9600);
+myPort.bufferUntil(lf);              
 }
 /* draw the screen */
 void draw(){
-  fill(0);                              // set the following shapes to be black
-  noStroke();                           // set the following shapes to have no outline
-  ellipse(radius, radius, 750, 750);    // draw a circle with a width/ height = 750 with its center position (x and y) set by the radius
-  rectMode(CENTER);                     // set the following rectangle to be drawn around its center
-  rect(350,402,800,100);                // draw rectangle (x, y, width, height)
-  if (degree >= 179) {                  // if at the far right then set motion = 1/ true we're about to go right to left
-  motion = 1;                           // this changes the animation to run right to left
+  fill(0);                              
+  noStroke();                           
+  ellipse(radius, radius, 750, 750);    
+  rectMode(CENTER);                    
+  rect(350,402,800,100);               
+  if (degree >= 179) {                  
+  motion = 1;                         
   }
-  if (degree <= 1) {                    // if servo at 0 degrees then we're about to go left to right
-  motion = 0;                           // this sets the animation to run left to right
+  if (degree <= 1) {                   
+  motion = 0;                          
   }
   /* setup the radar sweep */
   /*
@@ -44,29 +44,29 @@ void draw(){
   cos is for the x left to right value and sin calculates the y value
   since its a circle we plot our lines and vertices around the start point for everything will always be the center.
   */
-  strokeWeight(7);                      // set the thickness of the lines
-  if (motion == 0) {                    // if going left to right
-    for (int i = 0; i <= 20; i++) {     // draw 20 lines with fading colour each 1 degree further round than the last
-      stroke(0, (10*i), 0);             // set the stroke colour (Red, Green, Blue) base it on the the value of i
+  strokeWeight(7);                      
+  if (motion == 0) {                    
+    for (int i = 0; i <= 20; i++) {     
+      stroke(0, (10*i), 0);             
       line(radius, radius, radius + cos(radians(degree+(180+i)))*w, radius + sin(radians(degree+(180+i)))*w); // line(start x, start y, end x, end y)
     }
-  } else {                              // if going right to left
-    for (int i = 20; i >= 0; i--) {     // draw 20 lines with fading colour
-      stroke(0,200-(10*i), 0);          // using standard RGB values, each between 0 and 255
+  } else {                              
+    for (int i = 20; i >= 0; i--) {     
+      stroke(0,200-(10*i), 0);          
       line(radius, radius, radius + cos(radians(degree+(180+i)))*w, radius + sin(radians(degree+(180+i)))*w);
     }
   }
   /* Setup the shapes made from the sensor values */
-  noStroke();                           // no outline
+  noStroke();                          
   /* first sweep */
-  fill(0,50,0);                         // set the fill colour of the shape (Red, Green, Blue)
-  beginShape();                         // start drawing shape
-    for (int i = 0; i < 180; i++) {     // for each degree in the array
-      x = radius + cos(radians((180+i)))*((oldValue[i])); // create x coordinate
-      y = radius + sin(radians((180+i)))*((oldValue[i])); // create y coordinate
-      vertex(x, y);                     // plot vertices
+  fill(0,50,0);                         
+  beginShape();                         
+    for (int i = 0; i < 180; i++) {     
+      x = radius + cos(radians((180+i)))*((oldValue[i]));
+      y = radius + sin(radians((180+i)))*((oldValue[i])); 
+      vertex(x, y);                     
     }
-  endShape();                           // end shape
+  endShape();                           
   /* second sweep */
   fill(0,110,0);
   beginShape();
@@ -80,7 +80,7 @@ void draw(){
   fill(0,170,0);
   beginShape();
     for (int i = 0; i < 180; i++) {
-      x = radius + cos(radians((180+i)))*((newValue[i]+oldValue[i])/2); // create average
+      x = radius + cos(radians((180+i)))*((newValue[i]+oldValue[i])/2); 
       y = radius + sin(radians((180+i)))*((newValue[i]+oldValue[i])/2);
       vertex(x, y);
     }
@@ -128,8 +128,8 @@ void draw(){
   fill(0);
   rect(350,402,800,100);
   fill(0, 100, 0);
-  text("Grados: "+Integer.toString(degree), 100, 380, 100, 50);           // use Integet.toString to convert numeric to string as text() only outputs strings
-  text("Distancia: "+Integer.toString(value), 100, 400, 100, 50);         // text(string, x, y, width, height)
+  text("Grados: "+Integer.toString(degree), 100, 380, 100, 50);          
+  text("Distancia: "+Integer.toString(value), 100, 400, 100, 50);         
   text("Mr GTS", 540, 380, 250, 50);
   fill(0);
   rect(70,60,150,100);
@@ -153,12 +153,12 @@ void draw(){
 }
 /* get values from serial port */
 void serialEvent (Serial myPort) {
-  String xString = myPort.readStringUntil(lf);  // read the serial port until a new line
+  String xString = myPort.readStringUntil(lf);  
    
     if (xString != null) {  // if theres data in between the new lines
         xString = trim(xString); // get rid of any whitespace just in case
-        String getX = xString.substring(1, xString.indexOf("V")); // get the value of the servo position
-        String getV = xString.substring(xString.indexOf("V")+1, xString.length()); // get the value of the sensor reading
+        String getX = xString.substring(1, xString.indexOf("V")); 
+        String getV = xString.substring(xString.indexOf("V")+1, xString.length());
         degree = Integer.parseInt(getX); // set the values to variables
         value = Integer.parseInt(getV);
         oldValue[degree] = newValue[degree]; // store the values in the arrays.
@@ -166,7 +166,7 @@ void serialEvent (Serial myPort) {
         /* sets a counter to allow for the first 2 sweeps of the servo */
         firstRun++;
         if (firstRun > 360) {
-        firstRun = 360; // keep the value at 360
+        firstRun = 360; 
         }
   }
 }
