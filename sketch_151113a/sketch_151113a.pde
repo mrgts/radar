@@ -155,7 +155,7 @@ void serialEvent (Serial myPort) {
         value = Integer.parseInt(getV);
         oldValue[degree] = newValue[degree]; 
         newValue[degree] = value;
-        /* sets a counter to allow for the first 2 sweeps of the servo */
+       
         firstRun++;
         if (firstRun > 360) {
         firstRun = 360; 
