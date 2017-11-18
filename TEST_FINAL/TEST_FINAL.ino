@@ -1,7 +1,6 @@
 /*
 radar de ultrasonido para arduino 
 Autor: MrGTS
-Fecha: 15/04/2013
  Arduino SRF05 Radar Sketch
 */
 #include <Servo.h>   
